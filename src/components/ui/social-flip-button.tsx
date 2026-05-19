@@ -61,19 +61,8 @@ const SocialFlipNode = ({
   frontClassName?: string;
   backClassName?: string;
 }) => {
-  const Wrapper = item.href ? "a" : "div";
-  const wrapperProps = item.href
-    ? { href: item.href, target: "_blank", rel: "noopener noreferrer" }
-    : { onClick: item.onClick };
-
-  return (
-    <Wrapper
-      {...(wrapperProps as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
-      className={cn("relative h-8 w-8 cursor-pointer", itemClassName)}
-      style={{ perspective: "1000px" }}
-      onMouseEnter={() => setTooltipIndex(index)}
-      onMouseLeave={() => setTooltipIndex(null)}
-    >
+  const content = (
+    <>
       <AnimatePresence>
         {isFlipped && tooltipIndex === index && (
           <motion.div
@@ -106,8 +95,7 @@ const SocialFlipNode = ({
         {/* Front - Letter */}
         <div
           className={cn(
-            "absolute inset-0 flex items-center justify-center rounded-md bg-white text-sm font-outfit font-bold text-dexiko-black shadow-sm border border-black/5",
-            frontClassName
+            "absolute inset-0 flex items-center justify-center rounded-md bg-white text-sm font-outfit font-bold text-dexiko-black shadow-sm border border-black/5", frontClassName
           )}
           style={{ backfaceVisibility: "hidden" }}
         >
@@ -117,8 +105,7 @@ const SocialFlipNode = ({
         {/* Back - Icon */}
         <div
           className={cn(
-            "absolute inset-0 flex items-center justify-center rounded-md bg-dexiko-orange text-sm text-white",
-            backClassName
+            "absolute inset-0 flex items-center justify-center rounded-md bg-dexiko-orange text-sm text-white", backClassName
           )}
           style={{
             backfaceVisibility: "hidden",
@@ -128,7 +115,36 @@ const SocialFlipNode = ({
           {item.icon}
         </div>
       </motion.div>
-    </Wrapper>
+    </>
+  );
+
+  const commonProps = {
+    className: cn("relative h-8 w-8 cursor-pointer", itemClassName),
+    style: { perspective: "1000px" },
+    onMouseEnter: () => setTooltipIndex(index),
+    onMouseLeave: () => setTooltipIndex(null),
+  };
+
+  if (item.href) {
+    return (
+      <a
+        href={item.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        {...commonProps}
+      >
+        {content}
+      </a>
+    );
+  }
+
+  return (
+    <div
+      onClick={item.onClick}
+      {...commonProps}
+    >
+      {content}
+    </div>
   );
 };
 
